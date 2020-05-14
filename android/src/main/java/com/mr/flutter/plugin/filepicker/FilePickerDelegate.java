@@ -160,20 +160,26 @@ public class FilePickerDelegate implements PluginRegistry.ActivityResultListener
             return;
         }
 
-        intent = new Intent(Intent.ACTION_GET_CONTENT);
-        final Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath() + File.separator);
-        Log.d(TAG, "Selected type " + type);
-        intent.setDataAndType(uri, this.type);
-        intent.setType(this.type);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, this.isMultipleSelection);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        if (type.equals("image/*")) {
+            intent = new Intent(Intent.ACTION_PICK);
+            intent.setType(this.type);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, this.isMultipleSelection);
+        } else {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+            final Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath() + File.separator);
+            Log.d(TAG, "Selected type " + type);
+            intent.setDataAndType(uri, this.type);
+            intent.setType(this.type);
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, this.isMultipleSelection);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-        if (type.contains(",")) {
-            allowedExtensions = type.split(",");
-        }
+            if (type.contains(",")) {
+                allowedExtensions = type.split(",");
+            }
 
-        if (allowedExtensions != null) {
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, allowedExtensions);
+            if (allowedExtensions != null) {
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, allowedExtensions);
+            }
         }
 
         if (intent.resolveActivity(this.activity.getPackageManager()) != null) {
