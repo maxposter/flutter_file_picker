@@ -98,7 +98,7 @@
     }
     
     self.documentPickerController.delegate = self;
-    self.documentPickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    self.documentPickerController.modalPresentationStyle = UIModalPresentationFullScreen;
     self.galleryPickerController.allowsEditing = NO;
     
     [_viewController presentViewController:self.documentPickerController animated:YES completion:nil];
@@ -116,7 +116,7 @@
     
     self.galleryPickerController = [[UIImagePickerController alloc] init];
     self.galleryPickerController.delegate = self;
-    self.galleryPickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    self.galleryPickerController.modalPresentationStyle = UIModalPresentationFullScreen;
     self.galleryPickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
     
     switch (type) {
@@ -195,7 +195,7 @@
     self.audioPickerController.delegate = self;
     self.audioPickerController.showsCloudItems = NO;
     self.audioPickerController.allowsPickingMultipleItems = NO;
-    self.audioPickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
+    self.audioPickerController.modalPresentationStyle = UIModalPresentationFullScreen;
     
     [self.viewController presentViewController:self.audioPickerController animated:YES completion:nil];
 }
@@ -299,6 +299,9 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
     Log(@"FilePicker canceled");
     _result(nil);
     _result = nil;
+    if (controller == nil) {
+        return;
+    }
     [controller dismissViewControllerAnimated:YES completion:NULL];
 }
 
@@ -306,6 +309,9 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
     Log(@"FilePicker canceled");
     _result(nil);
     _result = nil;
+    if (controller == nil) {
+        return;
+    }
     [controller dismissViewControllerAnimated:YES completion:NULL];
 }
 
@@ -313,6 +319,9 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
     Log(@"FilePicker canceled");
     _result(nil);
     _result = nil;
+    if (picker == nil) {
+        return;
+    }
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
