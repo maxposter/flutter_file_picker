@@ -12,6 +12,7 @@
 @property (nonatomic) UIDocumentInteractionController *interactionController;
 @property (nonatomic) MPMediaPickerController *audioPickerController;
 @property (nonatomic) NSArray<NSString *> * allowedExtensions;
+@property (nonatomic) bool processing;
 @end
 
 @implementation FilePickerPlugin
@@ -101,6 +102,8 @@
     self.documentPickerController.modalPresentationStyle = UIModalPresentationFullScreen;
     self.galleryPickerController.allowsEditing = NO;
     
+    _processing = NO;
+    
     [_viewController presentViewController:self.documentPickerController animated:YES completion:nil];
 }
 
@@ -132,6 +135,8 @@
             self.galleryPickerController.mediaTypes = [videoTypes arrayByAddingObjectsFromArray:imageTypes];
             break;
     }
+    
+    _processing = NO;
     
     [self.viewController presentViewController:self.galleryPickerController animated:YES completion:nil];
 }
@@ -186,6 +191,8 @@
         self->_result = nil;
     }];
     
+    _processing = NO;
+    
     [_viewController presentViewController:dkImagePickerController animated:YES completion:nil];
 }
 
@@ -204,6 +211,8 @@
 
 // DocumentPicker delegate - iOS 10 only
 - (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentAtURL:(NSURL *)url{
+    if(_processing) return;
+    _processing = YES;
     [self.documentPickerController dismissViewControllerAnimated:YES completion:nil];
     NSString * path = (NSString *)[url path];
     _result(path);
@@ -213,10 +222,11 @@
 // DocumentPicker delegate
 - (void)documentPicker:(UIDocumentPickerViewController *)controller
 didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
-    
     if(_result == nil) {
         return;
     }
+    if(_processing) return;
+    _processing = YES;
     
     [self.documentPickerController dismissViewControllerAnimated:YES completion:nil];
     NSArray * result = [FileUtils resolvePath:urls];
@@ -236,6 +246,8 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
     if(_result == nil) {
         return;
     }
+    if(_processing) return;
+    _processing = YES;
     
     NSURL *pickedVideoUrl = [info objectForKey:UIImagePickerControllerMediaURL];
     NSURL *pickedImageUrl;
@@ -273,6 +285,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
                                     message:@"Temporary file could not be created"
                                     details:nil]);
         _result = nil;
+        _processing = NO;
         return;
     }
     
@@ -284,6 +297,8 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 // AudioPicker delegate
 - (void)mediaPicker: (MPMediaPickerController *)mediaPicker didPickMediaItems:(MPMediaItemCollection *)mediaItemCollection
 {
+    if(_processing) return;
+    _processing = YES;
     [mediaPicker dismissViewControllerAnimated:YES completion:NULL];
     NSURL *url = [[[mediaItemCollection items] objectAtIndex:0] valueForKey:MPMediaItemPropertyAssetURL];
     if(url == nil) {
@@ -296,6 +311,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 #pragma mark - Actions canceled
 
 - (void)mediaPickerDidCancel:(MPMediaPickerController *)controller {
+    if(_processing) return;
     Log(@"FilePicker canceled");
     _result(nil);
     _result = nil;
@@ -306,6 +322,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 }
 
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
+    if(_processing) return;
     Log(@"FilePicker canceled");
     _result(nil);
     _result = nil;
@@ -316,6 +333,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    if(_processing) return;
     Log(@"FilePicker canceled");
     _result(nil);
     _result = nil;
