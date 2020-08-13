@@ -313,8 +313,10 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 - (void)mediaPickerDidCancel:(MPMediaPickerController *)controller {
     if(_processing) return;
     Log(@"FilePicker canceled");
-    _result(nil);
-    _result = nil;
+    if(_result != nil) {
+        _result(nil);
+        _result = nil;
+    }
     if (controller == nil) {
         return;
     }
@@ -324,8 +326,10 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
     if(_processing) return;
     Log(@"FilePicker canceled");
-    _result(nil);
-    _result = nil;
+    if(_result != nil) {
+        _result(nil);
+        _result = nil;
+    }
     if (controller == nil) {
         return;
     }
@@ -335,8 +339,10 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     if(_processing) return;
     Log(@"FilePicker canceled");
-    _result(nil);
-    _result = nil;
+    if(_result != nil) {
+        _result(nil);
+        _result = nil;
+    }
     if (picker == nil) {
         return;
     }
