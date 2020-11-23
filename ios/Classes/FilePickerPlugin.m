@@ -466,22 +466,37 @@ didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls{
 
 - (void)mediaPickerDidCancel:(MPMediaPickerController *)controller {
     Log(@"FilePicker canceled");
-    _result(nil);
-    _result = nil;
+    if(_result != nil) {
+        _result(nil);
+        _result = nil;
+    }
+    if (controller == nil) {
+        return;
+    }
     [controller dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
     Log(@"FilePicker canceled");
-    _result(nil);
-    _result = nil;
+    if(_result != nil) {
+        _result(nil);
+        _result = nil;
+    }
+    if (controller == nil) {
+        return;
+    }
     [controller dismissViewControllerAnimated:YES completion:NULL];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     Log(@"FilePicker canceled");
-    _result(nil);
-    _result = nil;
+    if(_result != nil) {
+        _result(nil);
+        _result = nil;
+    }
+    if (picker == nil) {
+        return;
+    }
     [picker dismissViewControllerAnimated:YES completion:NULL];
 }
 
