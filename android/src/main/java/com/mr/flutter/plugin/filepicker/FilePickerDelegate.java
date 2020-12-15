@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
@@ -196,7 +197,7 @@ public class FilePickerDelegate implements PluginRegistry.ActivityResultListener
 
         if (type.equals("dir")) {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        } else if (type.equals("image/*")) {
+        } else if (type.equals("image/*" ) || (type.equals("video/*"))) {
             intent = new Intent(Intent.ACTION_PICK);
             intent.setType(this.type);
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, this.isMultipleSelection);
